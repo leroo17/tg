@@ -10,14 +10,16 @@
 
 
 
-const TelegramApi = require('node-telegram-bot-api')
+const TelegramApi = require('node-telegram-bot-api');
+require('dotenv').config();
+const cron = require('node-cron');
+const CHANNEL_ID = '@calendar_football';
 const pool = require('./bd');
-const { numberOptions, fruitOptions, againOptions} = require ('./options')
+const { numberOptions, fruitOptions, againOptions} = require ('./options');
 
-const token = '8133243464:AAFxDyyuF5y1N8_iE2sepnGDgiMPWsH4WSw'
-const bot = new TelegramApi(token, {polling:  true})
-const chats = {}
-
+const token = process.env.TOKEN;
+const bot = new TelegramApi(token, {polling:  true});
+const chats = {};
 
 const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 const fruits = ['🍌', '🍏', '🍐', '🍋', '🍋‍🟩', '🍉', '🍇', '🍓'];
@@ -26,7 +28,7 @@ const emojies = [
 ];
 const stickers = [
     'CAACAgIAAxkBAAEOfuxoBAU9GifxaGL2sPHsQHphmxF4NQACygcAApb6EgWAD8KJKK3uKTYE'
-]
+];
 
 // const startGame = async (chatId) => {
 //        await bot.sendMessage(chatId, 'Я загадаю цифру 1-9, а ты угадай!');
@@ -41,6 +43,15 @@ const stickers = [
 //         chats[chatId] = randomFruit;
 //         await bot.sendMessage(chatId, 'Отгадай!', gameOptions);
 // }
+
+function sendPostToChannel(content) {
+    bot.sendMessage(CHANNEL_ID, content)
+      .then(() => console.log('Пост опубликован!'))
+      .catch(err => console.error('Ошибка:', err));
+  }
+  
+  const postContent = 'Фыр-фыр 🦊\n#тест';
+  sendPostToChannel(postContent);
 
 const startUniversalGame = async (chatId, greetingGameText, gameType, arrayElements, optionsElements) => {
         await bot.sendMessage(chatId, greetingGameText);
